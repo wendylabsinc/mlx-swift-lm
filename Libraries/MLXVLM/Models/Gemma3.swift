@@ -1,3 +1,4 @@
+import Foundation
 import MLX
 import MLXFast
 import MLXLMCommon
@@ -171,7 +172,7 @@ private class Attention: Module {
         self.headDim = config.headDim
         self.layerIdx = layerIdx
 
-        self.scale = Float(pow(Double(config.queryPreAttnScalar), -0.5))
+        self.scale = Float(Foundation.pow(Double(config.queryPreAttnScalar), -0.5))
 
         self._queryProj.wrappedValue = Linear(dim, numHeads * headDim, bias: false)
         self._keyProj.wrappedValue = Linear(dim, numKVHeads * headDim, bias: false)
@@ -509,7 +510,7 @@ private class VisionAttention: Module {
 
         self.numHeads = numHeads
         let headDim = dimensions / numHeads
-        self.scale = Float(pow(Double(headDim), -0.5))
+        self.scale = Float(Foundation.pow(Double(headDim), -0.5))
 
         let queryInputDims = queryInputDimensions ?? dimensions
         let keyInputDims = keyInputDimensions ?? dimensions
