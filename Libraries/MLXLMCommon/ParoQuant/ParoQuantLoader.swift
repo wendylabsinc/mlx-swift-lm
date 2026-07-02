@@ -1,9 +1,21 @@
 import Foundation
 import MLX
 import MLXNN
-import os
+#if canImport(os)
+    import os
+#endif
 
-private let logger = Logger(subsystem: "mlx-swift-lm", category: "paroquant")
+#if canImport(os)
+    private let logger = Logger(subsystem: "mlx-swift-lm", category: "paroquant")
+#else
+    // Minimal stand-in where Apple's os.Logger does not exist (Linux).
+    private struct ParoQuantLogger {
+        func warning(_ message: String) { print("[paroquant] warning: \(message)") }
+        func error(_ message: String) { print("[paroquant] error: \(message)") }
+        func info(_ message: String) { print("[paroquant] \(message)") }
+    }
+    private let logger = ParoQuantLogger()
+#endif
 
 // MARK: - Detection
 
