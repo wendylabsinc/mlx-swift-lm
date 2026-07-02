@@ -7,6 +7,13 @@ import MLXNN
     import CoreImage
 #endif
 
+#if !canImport(CoreGraphics)
+    // This toolchain's Linux Foundation has no CGFloat; the processor
+    // configuration mirrors preprocessor_config.json, which uses doubles.
+    // (Upstream PR ml-explore/mlx-swift-lm#321 introduces a proper shim.)
+    public typealias CGFloat = Double
+#endif
+
 // Based on https://github.com/Blaizzy/mlx-vlm/tree/main/mlx_vlm/models/gemma3
 
 // MARK: - Text Configuration
