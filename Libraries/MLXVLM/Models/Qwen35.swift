@@ -1,3 +1,6 @@
+// Not available on Linux: depends on Qwen3VL types (CoreImage-gated).
+#if canImport(CoreImage)
+
 //
 //  Qwen35.swift
 //  mlx-swift-lm
@@ -1258,3 +1261,5 @@ extension Qwen35 {
         return castCache(cache)
     }
 }
+
+#endif  // canImport(CoreImage)

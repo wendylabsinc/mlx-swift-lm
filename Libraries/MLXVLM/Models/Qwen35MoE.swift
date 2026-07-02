@@ -1,3 +1,6 @@
+// Not available on Linux: depends on Qwen3VL types (CoreImage-gated).
+#if canImport(CoreImage)
+
 //
 //  Qwen35MoE.swift
 //  mlx-swift-lm
@@ -45,3 +48,5 @@ public final class Qwen35MoE: Qwen35 {
         return super.sanitize(weights: remapped)
     }
 }
+
+#endif  // canImport(CoreImage)

@@ -87,11 +87,11 @@ public enum VLMTypeRegistry {
     /// hence the imperative build.)
     public static let shared: ModelTypeRegistry<LanguageModel> = {
         var creators: [String: @Sendable (Data) throws -> any LanguageModel] = [
-            "qwen3_5": create(Qwen35Configuration.self, Qwen35.init),
-            "qwen3_5_moe": create(Qwen35Configuration.self, Qwen35MoE.init),
-            "gemma3": create(Gemma3Configuration.self, Gemma3.init),
+            "gemma3": create(Gemma3Configuration.self, Gemma3.init)
         ]
         #if canImport(CoreImage)
+            creators["qwen3_5"] = create(Qwen35Configuration.self, Qwen35.init)
+            creators["qwen3_5_moe"] = create(Qwen35Configuration.self, Qwen35MoE.init)
             creators["paligemma"] = create(PaliGemmaConfiguration.self, PaliGemma.init)
             creators["qwen2_vl"] = create(Qwen2VLConfiguration.self, Qwen2VL.init)
             creators["qwen2_5_vl"] = create(Qwen25VLConfiguration.self, Qwen25VL.init)
