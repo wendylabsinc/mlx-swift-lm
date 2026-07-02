@@ -1,3 +1,6 @@
+// Not available on Linux: depends on CoreImage-based MediaProcessing.
+#if canImport(CoreImage)
+
 // Copyright © 2024 Apple Inc.
 
 // port of https://github.com/Blaizzy/mlx-vlm/tree/main/mlx_vlm/models/qwen2_vl
@@ -926,3 +929,5 @@ public struct Qwen2VLMessageGenerator: MessageGenerator {
     }
 }
 #endif
+
+#endif  // canImport(CoreImage)

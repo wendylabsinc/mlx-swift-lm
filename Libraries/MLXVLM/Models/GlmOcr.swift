@@ -1,3 +1,6 @@
+// Not available on Linux: depends on CoreImage-based MediaProcessing.
+#if canImport(CoreImage)
+
 //
 //  GlmOcr.swift
 //  mlx-swift-lm
@@ -1266,3 +1269,5 @@ public struct GlmOcrMessageGenerator: MessageGenerator {
         ]
     }
 }
+
+#endif  // canImport(CoreImage)

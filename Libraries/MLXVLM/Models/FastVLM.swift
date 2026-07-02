@@ -1,3 +1,6 @@
+// Not available on Linux: depends on CoreImage-based MediaProcessing.
+#if canImport(CoreImage)
+
 //
 //  FastVLM.swift
 //  mlx-swift-lm
@@ -1183,3 +1186,5 @@ public struct FastVLMMessageGenerator: MessageGenerator {
             .map { generate(message: $0) }
     }
 }
+
+#endif  // canImport(CoreImage)

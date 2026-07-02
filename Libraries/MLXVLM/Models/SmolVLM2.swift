@@ -1,3 +1,6 @@
+// Not available on Linux: depends on CoreImage-based MediaProcessing.
+#if canImport(CoreImage)
+
 //
 //  SmolVLM2.swift
 //  mlx-swift-lm
@@ -365,3 +368,5 @@ public struct SmolVLMProcessor: UserInputProcessor {
         }
     }
 }
+
+#endif  // canImport(CoreImage)

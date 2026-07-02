@@ -1,3 +1,6 @@
+// Not available on Linux: depends on CoreImage-based MediaProcessing.
+#if canImport(CoreImage)
+
 //
 //  Idefics3.swift
 //  mlx-swift-lm
@@ -898,3 +901,5 @@ public struct Idefics3Processor: UserInputProcessor {
         }
     }
 }
+
+#endif  // canImport(CoreImage)

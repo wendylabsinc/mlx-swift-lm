@@ -1,3 +1,6 @@
+// Not available on Linux: depends on CoreImage-based MediaProcessing.
+#if canImport(CoreImage)
+
 // Port of https://github.com/Blaizzy/mlx-vlm/tree/main/mlx_vlm/models/qwen2_5_vl
 
 import CoreImage
@@ -1096,3 +1099,5 @@ public struct Qwen25VLProcessorConfiguration: Codable, Sendable {
         case imageProcessorType = "image_processor_type"
     }
 }
+
+#endif  // canImport(CoreImage)

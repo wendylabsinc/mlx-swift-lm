@@ -1,3 +1,6 @@
+// Not available on Linux: depends on CoreImage-based MediaProcessing.
+#if canImport(CoreImage)
+
 import CoreImage
 import Foundation
 import MLX
@@ -1100,3 +1103,5 @@ public struct Mistral3VLMProcessor: UserInputProcessor {
         )
     }
 }
+
+#endif  // canImport(CoreImage)

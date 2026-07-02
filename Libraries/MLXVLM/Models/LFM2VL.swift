@@ -1,3 +1,6 @@
+// Not available on Linux: depends on CoreImage-based MediaProcessing.
+#if canImport(CoreImage)
+
 // Port of https://github.com/Blaizzy/mlx-vlm/tree/main/mlx_vlm/models/lfm2_vl
 
 import CoreImage
@@ -1282,3 +1285,5 @@ public struct LFM2VLProcessorConfiguration: Codable, Sendable {
         case _downsampleFactor = "downsample_factor"
     }
 }
+
+#endif  // canImport(CoreImage)

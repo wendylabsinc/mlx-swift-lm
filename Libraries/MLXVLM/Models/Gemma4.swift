@@ -1,3 +1,6 @@
+// Not available on Linux: depends on CoreImage-based MediaProcessing.
+#if canImport(CoreImage)
+
 import CoreImage
 import Foundation
 import MLX
@@ -1925,3 +1928,5 @@ public struct Gemma4ProcessorConfiguration: Codable, Sendable {
         return CGSize(width: 800, height: 800)
     }
 }
+
+#endif  // canImport(CoreImage)

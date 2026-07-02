@@ -1,3 +1,6 @@
+// Not available on Linux: depends on CoreImage-based MediaProcessing.
+#if canImport(CoreImage)
+
 // Copyright © 2024 Apple Inc.
 
 // port of https://github.com/Blaizzy/mlx-vlm/tree/main/mlx_vlm/models/paligemma
@@ -736,3 +739,5 @@ public struct PaliGemmaProcessorConfiguration: Codable, Sendable {
     }
 }
 #endif
+
+#endif  // canImport(CoreImage)
