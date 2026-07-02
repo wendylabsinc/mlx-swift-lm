@@ -1,9 +1,11 @@
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
-import CoreImage
 import MLX
 import MLXFast
 import MLXLMCommon
 import MLXNN
+
+#if canImport(CoreImage)
+    import CoreImage
+#endif
 
 // Based on https://github.com/Blaizzy/mlx-vlm/tree/main/mlx_vlm/models/gemma3
 
@@ -1040,28 +1042,51 @@ public struct Gemma3Processor: UserInputProcessor {
         self.tokenizer = tokenizer
     }
 
-    public func preprocess(images: [CIImage], processing: UserInput.Processing?) throws -> (
-        MLXArray, THW
-    ) {
-        var userProcessing = processing ?? UserInput.Processing()
-        // Always use the vision configuration's imageSize. Ignore UserInput resize setting.
-        let targetSize = CGSize(width: config.imageSize, height: config.imageSize)
+    #if canImport(CoreImage)
+        public func preprocess(images: [CIImage], processing: UserInput.Processing?) throws -> (
+            MLXArray, THW
+        ) {
+            var userProcessing = processing ?? UserInput.Processing()
+            // Always use the vision configuration's imageSize. Ignore UserInput resize setting.
+            let targetSize = CGSize(width: config.imageSize, height: config.imageSize)
 
-        // Force the correct size for vision model alignment
-        userProcessing.resize = targetSize
+            // Force the correct size for vision model alignment
+            userProcessing.resize = targetSize
 
-        let processedImages = images.map { image in
-            let processedImage = MediaProcessing.apply(image, processing: userProcessing)
-            let srgbImage = MediaProcessing.inSRGBToneCurveSpace(processedImage)
-            let resizedImage = MediaProcessing.resampleBicubic(srgbImage, to: targetSize)
-            let normalizedImage = MediaProcessing.normalize(
-                resizedImage, mean: config.imageMeanTuple, std: config.imageStdTuple)
-            return MediaProcessing.asMLXArray(normalizedImage)
+            let processedImages = images.map { image in
+                let processedImage = MediaProcessing.apply(image, processing: userProcessing)
+                let srgbImage = MediaProcessing.inSRGBToneCurveSpace(processedImage)
+                let resizedImage = MediaProcessing.resampleBicubic(srgbImage, to: targetSize)
+                let normalizedImage = MediaProcessing.normalize(
+                    resizedImage, mean: config.imageMeanTuple, std: config.imageStdTuple)
+                return MediaProcessing.asMLXArray(normalizedImage)
+            }
+
+            let pixelValues = concatenated(processedImages)
+
+            return (pixelValues, THW(images.count, config.imageSize, config.imageSize))
+        }
+    #endif
+
+    /// Platform-neutral preprocessing for raw-pixel input
+    /// (``UserInput/Image/array(_:)``) — the only image path available on
+    /// Linux, where CoreImage does not exist. Pure MLX ops, so it runs on
+    /// CUDA as well as Metal.
+    public func preprocess(imageArrays: [MLXArray]) throws -> (MLXArray, THW) {
+        let mean = config.imageMeanTuple
+        let std = config.imageStdTuple
+        let processedImages = try imageArrays.map { array in
+            try MLXImageProcessing.prepare(
+                image: array,
+                size: (height: config.imageSize, width: config.imageSize),
+                mean: (Float(mean.0), Float(mean.1), Float(mean.2)),
+                std: (Float(std.0), Float(std.1), Float(std.2))
+            )
         }
 
         let pixelValues = concatenated(processedImages)
 
-        return (pixelValues, THW(images.count, config.imageSize, config.imageSize))
+        return (pixelValues, THW(imageArrays.count, config.imageSize, config.imageSize))
     }
 
     public func prepare(input: UserInput) async throws -> LMInput {
@@ -1076,9 +1101,19 @@ public struct Gemma3Processor: UserInputProcessor {
         var processedImage: LMInput.ProcessedImage?
 
         if !input.images.isEmpty {
-            let imagePixelsAndFrames = try input.images.map {
-                try preprocess(images: [$0.asCIImage()], processing: input.processing)
-            }
+            #if canImport(CoreImage)
+                let imagePixelsAndFrames = try input.images.map {
+                    try preprocess(images: [$0.asCIImage()], processing: input.processing)
+                }
+            #else
+                let imagePixelsAndFrames = try input.images.map { image -> (MLXArray, THW) in
+                    guard case .array(let array) = image else {
+                        throw UserInputError.arrayError(
+                            "only UserInput.Image.array is supported on this platform")
+                    }
+                    return try preprocess(imageArrays: [array])
+                }
+            #endif
             let imagePixelsConcatenated = concatenated(imagePixelsAndFrames.map { $0.0 })
             processedImage = LMInput.ProcessedImage(
                 pixels: imagePixelsConcatenated,
@@ -1179,4 +1214,3 @@ extension Gemma3: LoRAModel {
         languageModel.model.layers
     }
 }
-#endif

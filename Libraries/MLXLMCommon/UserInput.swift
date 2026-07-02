@@ -84,7 +84,11 @@ public struct UserInput {
     }
 
     /// Representation of an image resource.
-    public enum Image: Sendable {
+    ///
+    /// `@unchecked` because `MLXArray` is not `Sendable`; the associated
+    /// array is treated as immutable once wrapped. (Swift 6.3 rejects the
+    /// plain `Sendable` conformance that 6.2 accepted.)
+    public enum Image: @unchecked Sendable {
         #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
             case ciImage(CIImage)
         #endif
