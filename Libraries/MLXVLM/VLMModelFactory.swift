@@ -19,25 +19,23 @@ public enum VLMError: LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .imageRequired:
-            return String(localized: "An image is required for this operation.")
+            return "An image is required for this operation."
         case .maskRequired:
-            return String(localized: "An image mask is required for this operation.")
+            return "An image mask is required for this operation."
         case .singleImageAllowed:
-            return String(localized: "Only a single image is allowed for this operation.")
+            return "Only a single image is allowed for this operation."
         case .singleVideoAllowed:
-            return String(localized: "Only a single video is allowed for this operation.")
+            return "Only a single video is allowed for this operation."
         case .singleMediaTypeAllowed:
-            return String(
-                localized:
-                    "Only a single media type (image or video) is allowed for this operation.")
+            return "Only a single media type (image or video) is allowed for this operation."
         case .imageProcessingFailure(let details):
-            return String(localized: "Failed to process the image: \(details)")
+            return "Failed to process the image: \(details)"
         case .processing(let details):
-            return String(localized: "Processing error: \(details)")
+            return "Processing error: \(details)"
         case .noVideoTrackFound:
-            return String(localized: "Video file has no video tracks.")
+            return "Video file has no video tracks."
         case .videoNotDecodable:
-            return String(localized: "Video file not decodable.")
+            return "Video file not decodable."
         }
     }
 }
