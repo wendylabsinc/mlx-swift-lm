@@ -509,7 +509,7 @@ private class VisionAttention: Module {
 
         self.numHeads = numHeads
         let headDim = dimensions / numHeads
-        self.scale = pow(Float(headDim), -0.5)
+        self.scale = Float(pow(Double(headDim), -0.5))
 
         let queryInputDims = queryInputDimensions ?? dimensions
         let keyInputDims = keyInputDimensions ?? dimensions
