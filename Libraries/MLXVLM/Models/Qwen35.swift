@@ -477,7 +477,7 @@ enum Qwen35Language {
             self.numKeyValueHeads = args.kvHeads
             self.numAttentionHeads = args.attentionHeads
             self.headDim = args.headDim ?? (args.hiddenSize / args.attentionHeads)
-            self.scale = pow(Float(headDim), -0.5)
+            self.scale = Float(pow(Double(headDim), -0.5))
 
             _qProj.wrappedValue = Linear(
                 args.hiddenSize, numAttentionHeads * headDim * 2, bias: args.attentionBias)
@@ -678,7 +678,7 @@ enum Qwen35Language {
 
             var state = cache?[1]
             let dtype = q.dtype
-            let invScale = pow(Float(headKDim), -0.5)
+            let invScale = Float(pow(Double(headKDim), -0.5))
             let qNormed =
                 MLXArray(pow(invScale, 2)).asType(dtype)
                 * MLXFast.rmsNorm(q, weight: MLXArray.mlxNone, eps: 1e-6)
