@@ -1116,7 +1116,7 @@ public struct Gemma3Processor: UserInputProcessor {
             #else
                 let imagePixelsAndFrames = try input.images.map { image -> (MLXArray, THW) in
                     guard case .array(let array) = image else {
-                        throw UserInputError.arrayError(
+                        throw MLXImageProcessingError.unsupportedImageSource(
                             "only UserInput.Image.array is supported on this platform")
                     }
                     return try preprocess(imageArrays: [array])

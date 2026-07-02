@@ -3,11 +3,14 @@ import MLX
 
 public enum MLXImageProcessingError: LocalizedError {
     case invalidShape([Int])
+    case unsupportedImageSource(String)
 
     public var errorDescription: String? {
         switch self {
         case .invalidShape(let shape):
             return "Expected an [H, W, 3] (or [1, H, W, 3] / planar [3, H, W]) image, got shape \(shape)"
+        case .unsupportedImageSource(let message):
+            return message
         }
     }
 }
