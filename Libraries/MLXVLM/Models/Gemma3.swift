@@ -171,7 +171,7 @@ private class Attention: Module {
         self.headDim = config.headDim
         self.layerIdx = layerIdx
 
-        self.scale = pow(config.queryPreAttnScalar, -0.5)
+        self.scale = Float(pow(Double(config.queryPreAttnScalar), -0.5))
 
         self._queryProj.wrappedValue = Linear(dim, numHeads * headDim, bias: false)
         self._keyProj.wrappedValue = Linear(dim, numKVHeads * headDim, bias: false)
